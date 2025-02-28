@@ -71,3 +71,10 @@ Action Plan to study the required concepts and implement the project step by ste
 Compile the program:
 ```sh
 make
+```
+Run it
+```sh
+./philo <num_philosophers> <time_to_die> <time_to_eat> <time_to_sleep> [num_times_each_philosopher_must_eat]
+./philo 5 800 200 200
+
+
