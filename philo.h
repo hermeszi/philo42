@@ -23,7 +23,7 @@
 # include <sys/time.h>
 # include <string.h>
 
-# define WAIT 10000
+# define WAIT 1000
 
 typedef struct s_philosopher
 {

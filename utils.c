@@ -60,7 +60,7 @@ void	print_state(t_philosopher *p, char *state)
 	timestamp = get_current_time();
 	pthread_mutex_lock(p->print_lock);
 	if (*(p->simulation_running) || !ft_strncmp(state, "died", sizeof("died")))
-		printf("%lld %d %s\n", timestamp, p->id, state);
+		printf("%lld %d %s\n", timestamp, p->id + 1, state);
 	pthread_mutex_unlock(p->print_lock);
 }
 

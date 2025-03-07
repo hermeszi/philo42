@@ -24,7 +24,7 @@ int	init_philo(t_table *p, char **args)
 	while (i < p->count)
 	{
 		p->diner[i].id = i;
-		p->diner[i].last_meal_time = 0;
+		p->diner[i].last_meal_time = get_current_time();
 		p->diner[i].time_to_die = (int)ft_strtol(args[2], NULL, 10);
 		p->diner[i].time_to_eat = (int)ft_strtol(args[3], NULL, 10) * 1000;
 		p->diner[i].time_to_sleep = (int)ft_strtol(args[4], NULL, 10) * 1000;

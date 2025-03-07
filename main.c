@@ -20,14 +20,13 @@ void	*do_philo(void *arg)
 	philo = (t_philosopher *)arg;
 	philo->last_meal_time = get_current_time();
 	remaining_meals = philo->times_must_eat;
-	if (philo->id % 2 != 0)
+	if (philo->id % 2 == 0)
 		usleep(WAIT);
-	else
-		usleep(2 * WAIT);
 	while (remaining_meals != 0 && *(philo->simulation_running))
 	{
 		think(philo);
-		pickup_forks(philo);
+		if (pickup_forks(philo))
+			break ;
 		eat(philo);
 		putdown_forks(philo);
 		sleep_philo(philo);

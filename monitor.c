@@ -39,7 +39,7 @@ int	monitor_philo(t_table *p)
 			{
 				pthread_mutex_lock(&p->print_lock);
 				p->simulation_running = 0;
-				printf("%lld %d died\n", get_current_time(), p->diner[i].id);
+				printf("%lld %d died\n", get_current_time(), p->diner[i].id + 1);
 				pthread_mutex_unlock(&p->print_lock);
 				return (1);
 			}
