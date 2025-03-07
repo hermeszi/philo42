@@ -21,14 +21,17 @@ void	*do_philo(void *arg)
 	diner = (t_philosopher *)arg;
 	while (cycle < 3)
 	{
-		printf("[Philosopher %d] Cycle: %d\n", diner->id, cycle);
-		printf("  Last meal time: %lld\n", diner->last_meal_time);
-		printf("  Time to die: %d\n", diner->time_to_die);
-		printf("  Time to eat: %d\n", diner->time_to_eat);
-		printf("  Time to sleep: %d\n", diner->time_to_sleep);
-		printf("  Must eat: %d\n", diner->times_must_eat);
-		usleep(500000);
-		cycle++;
+		printf("[Philosopher %d] is thinking...\n", diner->id);
+		pthread_mutex_lock(diner->left_fork);
+		printf("[Philosopher %d] took left fork\n", diner->id);
+		pthread_mutex_lock(diner->right_fork);
+		printf("[Philosopher %d] took right fork - eating\n", diner->id);
+		diner->last_meal_time = get_current_time();
+		usleep(diner->time_to_eat);
+		pthread_mutex_unlock(diner->right_fork);
+		pthread_mutex_unlock(diner->left_fork);
+		printf("[Philosopher %d] put down forks - sleeping\n", diner->id);
+		usleep(diner->time_to_sleep);
 	}
 	printf("[Philosopher %d] Finished cycles.\n", diner->id);
 	return (NULL);
@@ -38,24 +41,23 @@ int	main(int argc, char **argv)
 {
 	t_philosopher	*diner;
 	pthread_t		*tid;
-	pthread_mutex_t	*forks;
+	pthread_mutex_t	*fork;
 	int				count;
 
+	diner = NULL;
+	tid = NULL;
+	fork = NULL;
 	if (argc < 5 || argc > 6)
 		return (printf("Error: Wrong number of arguments\n"), 2);
 	count = valid_input(argv);
 	if (!count)
 		return (printf("Error: Invalid arguments\n"), 2);
-	if (allocate_memory(&diner, &tid, &forks, count) != 0)
+	if (allocate_memory(&diner, &tid, &fork, argv) != 0)
 		return (1);
-	init_philo(diner, count, argv, forks);
 	if (create_threads(tid, diner, count) != 0)
-	{
-		clean_up(diner, tid, forks, count);
-		return (1);
-	}
+		return (clean_up(diner, tid, fork, count), 1);
 	wait_for_threads(tid, count);
-	clean_up(diner, tid, forks, count);
+	clean_up(diner, tid, fork, count);
 	return (printf("Exit\n"), 0);
 }
 /*

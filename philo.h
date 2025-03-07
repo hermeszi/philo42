@@ -20,6 +20,8 @@
 # include <stdio.h>
 # include <unistd.h>
 # include <pthread.h>
+# include <sys/time.h>
+# include <string.h>
 
 typedef struct s_philosopher
 {
@@ -40,15 +42,16 @@ int			ft_set_sign(const char **str);
 int			ft_char_to_digit(char c, int base);
 const char	*ft_check_base(const char *str, int *base);
 int			ft_isspace(int c);
-void		init_philo(t_philosopher *diner, int count, \
-			char **args, pthread_mutex_t *forks);
-int			init_forks(pthread_mutex_t **forks, int count);
+int			init_philo(t_philosopher **diner, int count, char **args, \
+			pthread_mutex_t *fork);
+int			init_fork(pthread_mutex_t **fork, int count);
 int			allocate_memory(t_philosopher **diner, pthread_t **tid, \
-			pthread_mutex_t **forks, int count);
+			pthread_mutex_t **fork, char **argv);
 int			create_threads(pthread_t *tid, t_philosopher *diner, int count);
 void		*do_philo(void *arg);
 void		wait_for_threads(pthread_t *tid, int count);
 void		clean_up(t_philosopher *diner, pthread_t *tid, \
-			pthread_mutex_t *forks, int count);
+			pthread_mutex_t *fork, int count);
+long long	get_current_time(void);
 
 #endif

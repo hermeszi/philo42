@@ -32,6 +32,14 @@ int	valid_input(char **args)
 	return (value);
 }
 
+long long	get_current_time(void)
+{
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec * 1000LL) + (tv.tv_usec / 1000));
+}
+
 void	wait_for_threads(pthread_t *tid, int count)
 {
 	int	i;
@@ -45,14 +53,14 @@ void	wait_for_threads(pthread_t *tid, int count)
 }
 
 void	clean_up(t_philosopher *diner, pthread_t *tid, \
-		pthread_mutex_t *forks, int count)
+		pthread_mutex_t *fork, int count)
 {
 	int	i;
 
 	i = 0;
 	while (i < count)
-		pthread_mutex_destroy(&forks[i++]);
+		pthread_mutex_destroy(&fork[i++]);
 	free(diner);
 	free(tid);
-	free(forks);
+	free(fork);
 }
