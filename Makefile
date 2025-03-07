@@ -9,7 +9,7 @@ CFLAGS = -Wall -Wextra -Werror -g
 HEADERS = philo.h
 
 # Source files
-SRCS = main.c utils.c lib.c lib_helper.c init.c action.c monitor.c
+SRCS = main.c utils.c lib.c lib_helper.c init.c action.c monitor.c init_philosopher.c
 
 # Object files
 OBJ_DIR = obj
@@ -23,7 +23,7 @@ all: $(OBJ_DIR) $(NAME)
 
 # Create object directory
 $(OBJ_DIR):
-	mkdir -p $(OBJ_DIR)
+	@mkdir -p $(OBJ_DIR)
 
 # Compile object files
 $(OBJ_DIR)/%.o: %.c $(HEADERS)

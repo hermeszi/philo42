@@ -12,36 +12,6 @@
 
 #include "philo.h"
 
-int	init_philo(t_table *p, char **args)
-{
-	int	i;
-
-	p->diner = malloc(p->count * sizeof(t_philosopher));
-	if (!p->diner)
-		return (printf("Memory Allocation Error\n"), 1);
-	memset(p->diner, 0, p->count * sizeof(t_philosopher));
-	i = 0;
-	while (i < p->count)
-	{
-		p->diner[i].id = i;
-		p->diner[i].last_meal_time = get_current_time();
-		p->diner[i].time_to_die = (int)ft_strtol(args[2], NULL, 10);
-		p->diner[i].time_to_eat = (int)ft_strtol(args[3], NULL, 10) * 1000;
-		p->diner[i].time_to_sleep = (int)ft_strtol(args[4], NULL, 10) * 1000;
-		if (args[5])
-			p->diner[i].times_must_eat = (int)ft_strtol(args[5], NULL, 10);
-		else
-			p->diner[i].times_must_eat = -1;
-		p->diner[i].left_fork = &(p->fork[i]);
-		p->diner[i].right_fork = &(p->fork[(i + 1) % p->count]);
-		p->diner[i].print_lock = &(p->print_lock);
-		p->diner[i].simulation_running = &(p->simulation_running);
-		p->diner[i].meals_eaten = 0;
-		i++;
-	}
-	return (0);
-}
-
 int	init_fork(pthread_mutex_t **fork, int count)
 {
 	int	i;

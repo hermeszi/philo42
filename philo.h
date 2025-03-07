@@ -72,7 +72,6 @@ int			pickup_forks(t_philosopher *p);
 void		eat(t_philosopher *p);
 void		putdown_forks(t_philosopher *p);
 void		sleep_philo(t_philosopher *p);
-int			check_death(t_philosopher *p);
 int			monitor_philo(t_table *p);
 
 #endif

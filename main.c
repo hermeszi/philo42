@@ -35,29 +35,57 @@ void	*do_philo(void *arg)
 	return (NULL);
 }
 
-int	main(int argc, char **argv)
+static int	check_arguments(int argc, t_table **p)
 {
-	t_table	*p;
-	int		status;
-
-	p = malloc(sizeof (t_table));
-	if (!p)
-		return (1);
-	p->simulation_running = 1;
-	p->diner = NULL;
-	p->tid = NULL;
 	if (argc < 5 || argc > 6)
-		return (printf("Error: Wrong number of arguments\n"), free(p), 2);
+	{
+		printf("Error: Wrong number of arguments\n");
+		return (2);
+	}
+	*p = malloc(sizeof(t_table));
+	if (!(*p))
+		return (1);
+	(*p)->simulation_running = 1;
+	(*p)->diner = NULL;
+	(*p)->tid = NULL;
+	return (0);
+}
+
+static int	setup_simulation(t_table *p, char **argv)
+{
 	p->count = valid_input(argv);
 	if (!p->count)
-		return (printf("Error: Invalid arguments\n"), free(p), 2);
+	{
+		printf("Error: Invalid arguments\n");
+		return (2);
+	}
 	if (allocate_memory(p, argv) != 0)
-		return (free(p), 1);
+		return (1);
+	return (0);
+}
+
+static int	run_simulation(t_table *p)
+{
+	int	status;
+
 	if (create_threads(p->tid, p->diner, p->count) != 0)
 		return (clean_up(p), 1);
 	status = monitor_philo(p);
 	usleep(WAIT);
 	wait_for_threads(p->tid, p->count);
+	return (status);
+}
+
+int	main(int argc, char **argv)
+{
+	t_table	*p;
+	int		status;
+
+	if (check_arguments(argc, &p) != 0)
+		return (free(p), 2);
+	if (setup_simulation(p, argv) != 0)
+		return (free(p), 2);
+	status = run_simulation(p);
 	clean_up(p);
 	if (status == 1)
 		printf("Simulation ended: a philosopher died\n");
@@ -65,6 +93,7 @@ int	main(int argc, char **argv)
 		printf("Simulation ended: all philosophers ate enough\n");
 	return (0);
 }
+
 /*
 valgrind --track-origins=yes --leak-check=full 
 --show-leak-kinds=all --track-fds=yes ./philo

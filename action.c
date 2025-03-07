@@ -21,49 +21,6 @@ void	think(t_philosopher *p)
 	}
 }
 
-// int	pickup_forks(t_philosopher *p)
-// {
-// 	if (!*(p->simulation_running))
-// 		return (1);
-// 	if (p->id % 2 == 0)
-// 	{
-// 		pthread_mutex_lock(p->right_fork);
-// 		if (!*(p->simulation_running))
-// 		{
-// 			pthread_mutex_unlock(p->right_fork);
-// 			return (1);
-// 		}
-// 		print_state(p, "has taken a fork");
-// 		pthread_mutex_lock(p->left_fork);
-// 		if (!*(p->simulation_running))
-// 		{
-// 			pthread_mutex_unlock(p->left_fork);
-// 			pthread_mutex_unlock(p->right_fork);
-// 			return (1);
-// 		}
-// 		print_state(p, "has taken a fork");
-// 	}
-// 	else
-// 	{
-// 		pthread_mutex_lock(p->left_fork);
-// 		if (!*(p->simulation_running))
-// 		{
-// 			pthread_mutex_unlock(p->left_fork);
-// 			return (1);
-// 		}
-// 		print_state(p, "has taken a fork");
-// 		pthread_mutex_lock(p->right_fork);
-// 		if (!*(p->simulation_running))
-// 		{
-// 			pthread_mutex_unlock(p->right_fork);
-// 			pthread_mutex_unlock(p->left_fork);
-// 			return (1);
-// 		}
-// 		print_state(p, "has taken a fork");
-// 	}
-// 	return (0);
-// }
-
 int	pickup_forks(t_philosopher *p)
 {
 	while (*(p->simulation_running))
@@ -72,10 +29,7 @@ int	pickup_forks(t_philosopher *p)
 		if (*(p->simulation_running))
 			print_state(p, "has taken a fork");
 		else
-		{
-			pthread_mutex_unlock(p->left_fork);
-			return (1);
-		}
+			return (pthread_mutex_unlock(p->left_fork), 1);
 		if (pthread_mutex_trylock(p->right_fork) == 0)
 		{
 			if (*(p->simulation_running))
@@ -120,22 +74,45 @@ void	sleep_philo(t_philosopher *p)
 	}
 }
 
-/*
-alternative solution
-int pickup_forks(t_philosopher *p)
+/*alternative
+int	pickup_forks(t_philosopher *p)
 {
+	if (!*(p->simulation_running))
+		return (1);
 	if (p->id % 2 == 0)
 	{
 		pthread_mutex_lock(p->right_fork);
+		if (!*(p->simulation_running))
+		{
+			pthread_mutex_unlock(p->right_fork);
+			return (1);
+		}
 		print_state(p, "has taken a fork");
 		pthread_mutex_lock(p->left_fork);
+		if (!*(p->simulation_running))
+		{
+			pthread_mutex_unlock(p->left_fork);
+			pthread_mutex_unlock(p->right_fork);
+			return (1);
+		}
 		print_state(p, "has taken a fork");
-	} 
+	}
 	else
 	{
 		pthread_mutex_lock(p->left_fork);
+		if (!*(p->simulation_running))
+		{
+			pthread_mutex_unlock(p->left_fork);
+			return (1);
+		}
 		print_state(p, "has taken a fork");
 		pthread_mutex_lock(p->right_fork);
+		if (!*(p->simulation_running))
+		{
+			pthread_mutex_unlock(p->right_fork);
+			pthread_mutex_unlock(p->left_fork);
+			return (1);
+		}
 		print_state(p, "has taken a fork");
 	}
 	return (0);
