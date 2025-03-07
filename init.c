@@ -12,29 +12,31 @@
 
 #include "philo.h"
 
-int	init_philo(t_philosopher **diner, int count, char **args, \
-		pthread_mutex_t *fork)
+int	init_philo(t_table *p, char **args)
 {
 	int	i;
 
-	*diner = malloc(count * sizeof(t_philosopher));
-	if (!*diner)
+	p->diner = malloc(p->count * sizeof(t_philosopher));
+	if (!p->diner)
 		return (printf("Memory Allocation Error\n"), 1);
-	memset(*diner, 0, count * sizeof(t_philosopher));
+	memset(p->diner, 0, p->count * sizeof(t_philosopher));
 	i = 0;
-	while (i < count)
+	while (i < p->count)
 	{
-		(*diner)[i].id = i;
-		(*diner)[i].last_meal_time = 0;
-		(*diner)[i].time_to_die = (int)ft_strtol(args[2], NULL, 10);
-		(*diner)[i].time_to_eat = (int)ft_strtol(args[3], NULL, 10);
-		(*diner)[i].time_to_sleep = (int)ft_strtol(args[4], NULL, 10);
+		p->diner[i].id = i;
+		p->diner[i].last_meal_time = 0;
+		p->diner[i].time_to_die = (int)ft_strtol(args[2], NULL, 10);
+		p->diner[i].time_to_eat = (int)ft_strtol(args[3], NULL, 10) * 1000;
+		p->diner[i].time_to_sleep = (int)ft_strtol(args[4], NULL, 10) * 1000;
 		if (args[5])
-			(*diner)[i].times_must_eat = (int)ft_strtol(args[5], NULL, 10);
+			p->diner[i].times_must_eat = (int)ft_strtol(args[5], NULL, 10);
 		else
-			(*diner)[i].times_must_eat = 0;
-		(*diner)[i].left_fork = &fork[i];
-		(*diner)[i].right_fork = &fork[(i + 1) % count];
+			p->diner[i].times_must_eat = -1;
+		p->diner[i].left_fork = &(p->fork[i]);
+		p->diner[i].right_fork = &(p->fork[(i + 1) % p->count]);
+		p->diner[i].print_lock = &(p->print_lock);
+		p->diner[i].simulation_running = &(p->simulation_running);
+		p->diner[i].meals_eaten = 0;
 		i++;
 	}
 	return (0);
@@ -61,27 +63,22 @@ int	init_fork(pthread_mutex_t **fork, int count)
 	return (0);
 }
 
-int	allocate_memory(t_philosopher **diner, pthread_t **tid, \
-		pthread_mutex_t **fork, char **argv)
+int	allocate_memory(t_table *p, char **argv)
 {
-	int	count;
-
-	count = valid_input(argv);
-	*tid = malloc(count * sizeof(pthread_t));
-	if (!*tid)
-	{
-		free(*diner);
+	p->tid = malloc(p->count * sizeof(pthread_t));
+	if (!p->tid)
 		return (printf("Thread Memory Allocation Error\n"), 1);
-	}
-	if (init_fork(fork, count) != 0 || \
-		init_philo(diner, count, argv, *fork) != 0)
+	if (pthread_mutex_init(&p->print_lock, NULL) != 0)
+		return (printf("Mutex Initialization Error\n"), 1);
+	if (init_fork(&(p->fork), p->count) != 0 || \
+		init_philo(p, argv) != 0)
 	{
-		if (!*diner)
-			free(*diner);
-		if (!*tid)
-			free(*tid);
-		if (!*fork)
-			free(*fork);
+		if (!p->diner)
+			free(p->diner);
+		if (!p->tid)
+			free(p->tid);
+		if (!p->fork)
+			free(p->fork);
 		return (1);
 	}
 	return (0);

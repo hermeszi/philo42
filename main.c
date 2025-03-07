@@ -14,51 +14,57 @@
 
 void	*do_philo(void *arg)
 {
-	t_philosopher	*diner;
-	int				cycle;
+	t_philosopher	*philo;
+	int				remaining_meals;
 
-	cycle = 0;
-	diner = (t_philosopher *)arg;
-	while (cycle < 3)
+	philo = (t_philosopher *)arg;
+	philo->last_meal_time = get_current_time();
+	remaining_meals = philo->times_must_eat;
+	if (philo->id % 2 != 0)
+		usleep(WAIT);
+	else
+		usleep(2 * WAIT);
+	while (remaining_meals != 0 && *(philo->simulation_running))
 	{
-		printf("[Philosopher %d] is thinking...\n", diner->id);
-		pthread_mutex_lock(diner->left_fork);
-		printf("[Philosopher %d] took left fork\n", diner->id);
-		pthread_mutex_lock(diner->right_fork);
-		printf("[Philosopher %d] took right fork - eating\n", diner->id);
-		diner->last_meal_time = get_current_time();
-		usleep(diner->time_to_eat);
-		pthread_mutex_unlock(diner->right_fork);
-		pthread_mutex_unlock(diner->left_fork);
-		printf("[Philosopher %d] put down forks - sleeping\n", diner->id);
-		usleep(diner->time_to_sleep);
+		think(philo);
+		pickup_forks(philo);
+		eat(philo);
+		putdown_forks(philo);
+		sleep_philo(philo);
+		remaining_meals--;
 	}
-	printf("[Philosopher %d] Finished cycles.\n", diner->id);
 	return (NULL);
 }
 
 int	main(int argc, char **argv)
 {
-	t_philosopher	*diner;
-	pthread_t		*tid;
-	pthread_mutex_t	*fork;
-	int				count;
+	t_table	*p;
+	int		status;
 
-	diner = NULL;
-	tid = NULL;
-	fork = NULL;
-	if (argc < 5 || argc > 6)
-		return (printf("Error: Wrong number of arguments\n"), 2);
-	count = valid_input(argv);
-	if (!count)
-		return (printf("Error: Invalid arguments\n"), 2);
-	if (allocate_memory(&diner, &tid, &fork, argv) != 0)
+	p = malloc(sizeof (t_table));
+	if (!p)
 		return (1);
-	if (create_threads(tid, diner, count) != 0)
-		return (clean_up(diner, tid, fork, count), 1);
-	wait_for_threads(tid, count);
-	clean_up(diner, tid, fork, count);
-	return (printf("Exit\n"), 0);
+	p->simulation_running = 1;
+	p->diner = NULL;
+	p->tid = NULL;
+	if (argc < 5 || argc > 6)
+		return (printf("Error: Wrong number of arguments\n"), free(p), 2);
+	p->count = valid_input(argv);
+	if (!p->count)
+		return (printf("Error: Invalid arguments\n"), free(p), 2);
+	if (allocate_memory(p, argv) != 0)
+		return (free(p), 1);
+	if (create_threads(p->tid, p->diner, p->count) != 0)
+		return (clean_up(p), 1);
+	status = monitor_philo(p);
+	usleep(WAIT);
+	wait_for_threads(p->tid, p->count);
+	clean_up(p);
+	if (status == 1)
+		printf("Simulation ended: a philosopher died\n");
+	else if (status == 2)
+		printf("Simulation ended: all philosophers ate enough\n");
+	return (0);
 }
 /*
 valgrind --track-origins=yes --leak-check=full 

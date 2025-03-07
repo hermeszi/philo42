@@ -47,20 +47,32 @@ void	wait_for_threads(pthread_t *tid, int count)
 	i = 0;
 	while (i < count)
 	{
-		printf("thread %d - closed with %d\n", i, pthread_join(tid[i], NULL));
+		if (pthread_join(tid[i], NULL) != 0)
+			printf("Error joining thread %d\n", i);
 		i++;
 	}
 }
 
-void	clean_up(t_philosopher *diner, pthread_t *tid, \
-		pthread_mutex_t *fork, int count)
+void	print_state(t_philosopher *p, char *state)
+{
+	long long	timestamp;
+
+	timestamp = get_current_time();
+	pthread_mutex_lock(p->print_lock);
+	if (*(p->simulation_running) || !ft_strncmp(state, "died", sizeof("died")))
+		printf("%lld %d %s\n", timestamp, p->id, state);
+	pthread_mutex_unlock(p->print_lock);
+}
+
+void	clean_up(t_table *p)
 {
 	int	i;
 
 	i = 0;
-	while (i < count)
-		pthread_mutex_destroy(&fork[i++]);
-	free(diner);
-	free(tid);
-	free(fork);
+	while (i < p->count)
+		pthread_mutex_destroy(&(p->fork[i++]));
+	free(p->diner);
+	free(p->tid);
+	free(p->fork);
+	free(p);
 }
