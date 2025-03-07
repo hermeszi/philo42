@@ -10,4 +10,49 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "philo.h"
 
+int	valid_input(char **args)
+{
+	int	i;
+	int	value;
+
+	i = 1;
+	value = -1;
+	while (args[i])
+	{
+		if (!ft_isvalid_integer((const char *) args[i], 10))
+			return (printf("Invalid: args not int: %s\n", args[i]), 0);
+		value = (int) ft_strtol((const char *) args[i], NULL, 10);
+		if (value < 0)
+			return (printf("Invalid: args < 0: %s\n", args[i]), 0);
+		i++;
+	}
+	value = (int) ft_strtol((const char *) args[1], NULL, 10);
+	return (value);
+}
+
+void	wait_for_threads(pthread_t *tid, int count)
+{
+	int	i;
+
+	i = 0;
+	while (i < count)
+	{
+		printf("thread %d - closed with %d\n", i, pthread_join(tid[i], NULL));
+		i++;
+	}
+}
+
+void	clean_up(t_philosopher *diner, pthread_t *tid, \
+		pthread_mutex_t *forks, int count)
+{
+	int	i;
+
+	i = 0;
+	while (i < count)
+		pthread_mutex_destroy(&forks[i++]);
+	free(diner);
+	free(tid);
+	free(forks);
+}

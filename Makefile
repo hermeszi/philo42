@@ -9,7 +9,7 @@ CFLAGS = -Wall -Wextra -Werror -g
 HEADERS = philo.h
 
 # Source files
-SRCS = main.c utils.c
+SRCS = main.c utils.c lib.c lib_helper.c init.c
 
 # Object files
 OBJ_DIR = obj
