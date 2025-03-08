@@ -37,6 +37,7 @@ typedef struct s_philosopher
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
 	pthread_mutex_t	*print_lock;
+	pthread_mutex_t	meal_time_lock;
 	int				*simulation_running;
 }	t_philosopher;
 

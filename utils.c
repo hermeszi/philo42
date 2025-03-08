@@ -70,7 +70,10 @@ void	clean_up(t_table *p)
 
 	i = 0;
 	while (i < p->count)
+	{
 		pthread_mutex_destroy(&(p->fork[i++]));
+		pthread_mutex_destroy(&p->diner[i].meal_time_lock);
+	}
 	free(p->diner);
 	free(p->tid);
 	free(p->fork);

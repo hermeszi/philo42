@@ -54,6 +54,10 @@ int	init_philo(t_table *p, char **args)
 	{
 		init_philosopher(&p->diner[i], args, i);
 		assign_forks_and_locks(&p->diner[i], p, i);
+		if (pthread_mutex_init(&(p->diner[i].meal_time_lock), NULL) != 0)
+		{
+			return (printf("Meal time lock initialization error\n"), 1);
+		}
 		i++;
 	}
 	return (0);

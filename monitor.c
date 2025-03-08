@@ -17,10 +17,13 @@ static int	check_death(t_philosopher *p)
 	long long	current_time;
 
 	current_time = get_current_time();
+	pthread_mutex_lock(&(p->meal_time_lock));
 	if ((current_time - p->last_meal_time) > p->time_to_die)
 	{
+		pthread_mutex_unlock(&(p->meal_time_lock));
 		return (1);
 	}
+	pthread_mutex_unlock(&(p->meal_time_lock));
 	return (0);
 }
 
