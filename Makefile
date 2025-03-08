@@ -3,7 +3,7 @@ NAME = philo
 
 # Compiler and flags
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror -g -pthread -fsanitize=thread
 
 # Header file
 HEADERS = philo.h

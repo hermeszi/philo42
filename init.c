@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myuen <myuen@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: myuen <myuen@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:08:06 by myuen             #+#    #+#             */
-/*   Updated: 2025/02/28 22:15:31 by myuen            ###   ########.fr       */
+/*   Updated: 2025/03/08 18:22:51 by myuen            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ int	allocate_memory(t_table *p, char **argv)
 	if (!p->tid)
 		return (printf("Thread Memory Allocation Error\n"), 1);
 	if (pthread_mutex_init(&p->print_lock, NULL) != 0)
+		return (printf("Mutex Initialization Error\n"), 1);
+	if (pthread_mutex_init(&p->simulation_running_lock, NULL))
 		return (printf("Mutex Initialization Error\n"), 1);
 	if (init_fork(&(p->fork), p->count) != 0 || \
 		init_philo(p, argv) != 0)

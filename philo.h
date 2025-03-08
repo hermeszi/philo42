@@ -3,12 +3,13 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myuen <myuen@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: myuen <myuen@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:07:52 by myuen             #+#    #+#             */
-/*   Updated: 2025/02/28 22:19:06 by myuen            ###   ########.fr       */
+/*   Updated: 2025/03/08 20:04:56 by myuen            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #ifndef PHILO_H
 # define PHILO_H
 
@@ -38,7 +39,9 @@ typedef struct s_philosopher
 	pthread_mutex_t	*right_fork;
 	pthread_mutex_t	*print_lock;
 	pthread_mutex_t	meal_time_lock;
+	pthread_mutex_t	*simulation_running_lock;
 	int				*simulation_running;
+	long long		start_time;
 }	t_philosopher;
 
 typedef struct s_table
@@ -47,8 +50,10 @@ typedef struct s_table
 	pthread_t		*tid;
 	pthread_mutex_t	*fork;
 	pthread_mutex_t	print_lock;
+	long long		start_time;
 	int				count;
 	int				simulation_running;
+	pthread_mutex_t	simulation_running_lock;
 }	t_table;
 
 long		ft_strtol(const char *str, char **endptr, int base);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myuen <myuen@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: myuen <myuen@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:08:06 by myuen             #+#    #+#             */
-/*   Updated: 2025/02/28 22:15:31 by myuen            ###   ########.fr       */
+/*   Updated: 2025/03/08 20:10:58 by myuen            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,16 @@ void	*do_philo(void *arg)
 {
 	t_philosopher	*philo;
 	int				remaining_meals;
+	int				should_continue;
 
 	philo = (t_philosopher *)arg;
+	pthread_mutex_lock(&(philo->meal_time_lock));
 	philo->last_meal_time = get_current_time();
+	pthread_mutex_unlock(&(philo->meal_time_lock));
 	remaining_meals = philo->times_must_eat;
-	if (philo->id % 2 == 0)
-		usleep(WAIT);
-	while (remaining_meals != 0 && *(philo->simulation_running))
+	usleep(WAIT * (philo->id % 2));
+	should_continue = 1;
+	while (remaining_meals != 0 && should_continue)
 	{
 		think(philo);
 		if (pickup_forks(philo))
@@ -31,6 +34,9 @@ void	*do_philo(void *arg)
 		putdown_forks(philo);
 		sleep_philo(philo);
 		remaining_meals--;
+		pthread_mutex_lock(philo->simulation_running_lock);
+		should_continue = *(philo->simulation_running);
+		pthread_mutex_unlock(philo->simulation_running_lock);
 	}
 	return (NULL);
 }
@@ -59,6 +65,7 @@ static int	setup_simulation(t_table *p, char **argv)
 		printf("Error: Invalid arguments\n");
 		return (2);
 	}
+	p->start_time = get_current_time();
 	if (allocate_memory(p, argv) != 0)
 		return (1);
 	return (0);

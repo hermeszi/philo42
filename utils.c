@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myuen <myuen@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: myuen <myuen@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:08:21 by myuen             #+#    #+#             */
-/*   Updated: 2025/02/28 22:08:27 by myuen            ###   ########.fr       */
+/*   Updated: 2025/03/08 20:06:04 by myuen            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,10 +56,14 @@ void	wait_for_threads(pthread_t *tid, int count)
 void	print_state(t_philosopher *p, char *state)
 {
 	long long	timestamp;
+	int			is_running;
 
-	timestamp = get_current_time();
+	pthread_mutex_lock(p->simulation_running_lock);
+	is_running = *(p->simulation_running);
+	pthread_mutex_unlock(p->simulation_running_lock);
+	timestamp = get_current_time() - p->start_time;
 	pthread_mutex_lock(p->print_lock);
-	if (*(p->simulation_running) || !ft_strncmp(state, "died", sizeof("died")))
+	if (is_running || !ft_strncmp(state, "died", sizeof("died")))
 		printf("%lld %d %s\n", timestamp, p->id + 1, state);
 	pthread_mutex_unlock(p->print_lock);
 }
@@ -71,9 +75,12 @@ void	clean_up(t_table *p)
 	i = 0;
 	while (i < p->count)
 	{
-		pthread_mutex_destroy(&(p->fork[i++]));
+		pthread_mutex_destroy(&(p->fork[i]));
 		pthread_mutex_destroy(&p->diner[i].meal_time_lock);
+		i++;
 	}
+	pthread_mutex_destroy(&p->simulation_running_lock);
+	pthread_mutex_destroy(&p->print_lock);
 	free(p->diner);
 	free(p->tid);
 	free(p->fork);

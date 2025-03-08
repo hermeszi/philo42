@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_philosopher.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myuen <myuen@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: myuen <myuen@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:08:06 by myuen             #+#    #+#             */
-/*   Updated: 2025/02/28 22:15:31 by myuen            ###   ########.fr       */
+/*   Updated: 2025/03/08 19:00:39 by myuen            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,9 @@ static void	assign_forks_and_locks(t_philosopher *philo, t_table *p, int i)
 	philo->left_fork = &(p->fork[i]);
 	philo->right_fork = &(p->fork[(i + 1) % p->count]);
 	philo->print_lock = &(p->print_lock);
+	philo->simulation_running_lock = &(p->simulation_running_lock);
 	philo->simulation_running = &(p->simulation_running);
+	philo->start_time = p->start_time;
 }
 
 int	init_philo(t_table *p, char **args)

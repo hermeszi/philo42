@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   action.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: myuen <myuen@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: myuen <myuen@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:08:06 by myuen             #+#    #+#             */
-/*   Updated: 2025/02/28 22:15:31 by myuen            ###   ########.fr       */
+/*   Updated: 2025/03/08 19:58:12 by myuen            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,16 @@
 
 void	think(t_philosopher *p)
 {
-	if (*(p->simulation_running))
+	int	is_running;
+
+	pthread_mutex_lock(p->simulation_running_lock);
+	is_running = *(p->simulation_running);
+	pthread_mutex_unlock(p->simulation_running_lock);
+	if (is_running)
 	{
 		print_state(p, "is thinking");
-		usleep(WAIT);
+		if (p->id % 2 != 0)
+			usleep(WAIT);
 	}
 }
 
@@ -77,14 +83,21 @@ void	think(t_philosopher *p)
 
 void	eat(t_philosopher *p)
 {
-	if (*(p->simulation_running))
+	int	is_running;
+
+	pthread_mutex_lock(p->simulation_running_lock);
+	is_running = *(p->simulation_running);
+	pthread_mutex_unlock(p->simulation_running_lock);
+	if (is_running)
 	{
 		pthread_mutex_lock(&(p->meal_time_lock));
 		p->last_meal_time = get_current_time();
 		pthread_mutex_unlock(&(p->meal_time_lock));
 		print_state(p, "is eating");
 		usleep(p->time_to_eat);
+		pthread_mutex_lock(&(p->meal_time_lock));
 		p->meals_eaten++;
+		pthread_mutex_unlock(&(p->meal_time_lock));
 	}
 }
 
@@ -96,7 +109,12 @@ void	putdown_forks(t_philosopher *p)
 
 void	sleep_philo(t_philosopher *p)
 {
-	if (*(p->simulation_running))
+	int	is_running;
+
+	pthread_mutex_lock(p->simulation_running_lock);
+	is_running = *(p->simulation_running);
+	pthread_mutex_unlock(p->simulation_running_lock);
+	if (is_running)
 	{
 		print_state(p, "is sleeping");
 		usleep(p->time_to_sleep);
