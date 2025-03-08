@@ -6,7 +6,7 @@
 /*   By: myuen <myuen@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:08:21 by myuen             #+#    #+#             */
-/*   Updated: 2025/03/08 20:06:04 by myuen            ###   ########.fr       */
+/*   Updated: 2025/03/08 20:49:40 by myuen            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,10 @@ int	valid_input(char **args)
 	while (args[i])
 	{
 		if (!ft_isvalid_integer((const char *) args[i], 10))
-			return (printf("Invalid: args not int: %s\n", args[i]), 0);
+			return (printf("Invalid: arg not valid interger: %s\n", args[i]), 0);
 		value = (int) ft_strtol((const char *) args[i], NULL, 10);
 		if (value < 0)
-			return (printf("Invalid: args < 0: %s\n", args[i]), 0);
+			return (printf("Invalid: arg < 0: %s\n", args[i]), 0);
 		i++;
 	}
 	value = (int) ft_strtol((const char *) args[1], NULL, 10);
@@ -81,8 +81,11 @@ void	clean_up(t_table *p)
 	}
 	pthread_mutex_destroy(&p->simulation_running_lock);
 	pthread_mutex_destroy(&p->print_lock);
-	free(p->diner);
-	free(p->tid);
-	free(p->fork);
+	if (p->diner)
+		free(p->diner);
+	if (p->tid)
+		free(p->tid);
+	if (p->fork)
+		free(p->fork);
 	free(p);
 }

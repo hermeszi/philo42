@@ -6,7 +6,7 @@
 /*   By: myuen <myuen@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:08:06 by myuen             #+#    #+#             */
-/*   Updated: 2025/03/08 20:10:58 by myuen            ###   ########.fr       */
+/*   Updated: 2025/03/08 20:45:08 by myuen            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ int	main(int argc, char **argv)
 	int		status;
 
 	if (check_arguments(argc, &p) != 0)
-		return (free(p), 2);
+		return (2);
 	if (setup_simulation(p, argv) != 0)
 		return (free(p), 2);
 	status = run_simulation(p);

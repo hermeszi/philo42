@@ -6,7 +6,7 @@
 /*   By: myuen <myuen@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:08:06 by myuen             #+#    #+#             */
-/*   Updated: 2025/03/08 19:58:12 by myuen            ###   ########.fr       */
+/*   Updated: 2025/03/08 20:42:46 by myuen            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,7 @@ void	think(t_philosopher *p)
 	if (is_running)
 	{
 		print_state(p, "is thinking");
-		if (p->id % 2 != 0)
-			usleep(WAIT);
+		usleep(WAIT);
 	}
 }
 
