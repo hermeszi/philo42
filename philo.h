@@ -6,7 +6,7 @@
 /*   By: myuen <myuen@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:07:52 by myuen             #+#    #+#             */
-/*   Updated: 2025/03/08 20:04:56 by myuen            ###   ########.fr       */
+/*   Updated: 2025/03/10 17:23:50 by myuen            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,5 +79,6 @@ void		eat(t_philosopher *p);
 void		putdown_forks(t_philosopher *p);
 void		sleep_philo(t_philosopher *p);
 int			monitor_philo(t_table *p);
+void		ft_wait(long long delay);
 
 #endif

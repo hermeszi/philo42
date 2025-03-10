@@ -6,7 +6,7 @@
 /*   By: myuen <myuen@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:08:21 by myuen             #+#    #+#             */
-/*   Updated: 2025/03/08 20:04:09 by myuen            ###   ########.fr       */
+/*   Updated: 2025/03/10 17:08:17 by myuen            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ static int	check_death(t_philosopher *p)
 	last_meal = p->last_meal_time;
 	time_to_die = p->time_to_die;
 	pthread_mutex_unlock(&(p->meal_time_lock));
-	result = (current_time - last_meal) > time_to_die;
+	result = (current_time - last_meal) >= time_to_die;
 	return (result);
 }
 
@@ -85,7 +85,6 @@ int	monitor_philo(t_table *p)
 			return (1);
 		if (check_all_philosophers_ate(p))
 			return (2);
-		usleep(WAIT);
 	}
 }
 /*

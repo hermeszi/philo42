@@ -6,7 +6,7 @@
 /*   By: myuen <myuen@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:08:06 by myuen             #+#    #+#             */
-/*   Updated: 2025/03/08 20:45:08 by myuen            ###   ########.fr       */
+/*   Updated: 2025/03/10 17:24:59 by myuen            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	*do_philo(void *arg)
 	philo->last_meal_time = get_current_time();
 	pthread_mutex_unlock(&(philo->meal_time_lock));
 	remaining_meals = philo->times_must_eat;
-	usleep(WAIT * (philo->id % 2));
+	ft_wait((philo->id % 2) *(philo->time_to_eat / 2));
 	should_continue = 1;
 	while (remaining_meals != 0 && should_continue)
 	{
@@ -78,7 +78,6 @@ static int	run_simulation(t_table *p)
 	if (create_threads(p->tid, p->diner, p->count) != 0)
 		return (clean_up(p), 1);
 	status = monitor_philo(p);
-	usleep(WAIT);
 	wait_for_threads(p->tid, p->count);
 	return (status);
 }
