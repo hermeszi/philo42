@@ -6,7 +6,7 @@
 /*   By: myuen <myuen@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/28 22:08:06 by myuen             #+#    #+#             */
-/*   Updated: 2025/03/10 17:24:59 by myuen            ###   ########.fr       */
+/*   Updated: 2025/03/10 17:40:48 by myuen            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,13 @@ void	*do_philo(void *arg)
 	should_continue = 1;
 	while (remaining_meals != 0 && should_continue)
 	{
-		think(philo);
 		if (pickup_forks(philo))
 			break ;
 		eat(philo);
 		putdown_forks(philo);
-		sleep_philo(philo);
 		remaining_meals--;
+		sleep_philo(philo);
+		think(philo);
 		pthread_mutex_lock(philo->simulation_running_lock);
 		should_continue = *(philo->simulation_running);
 		pthread_mutex_unlock(philo->simulation_running_lock);
